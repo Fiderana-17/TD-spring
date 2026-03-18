@@ -28,5 +28,20 @@ import java.util.List;
 
             return result;
         }
+
+        @GetMapping("/students")
+        public String getStudents(@RequestHeader(value = "Accept", defaultValue = "text/plain") String accept) {
+
+            if (!accept.equals("text/plain")) {
+                return "Format non supporté";
+            }
+
+            String result = "";
+            for (Student s : students) {
+                result += s.getFirstName() + " " + s.getLastName() + "\n";
+            }
+
+            return result;
+        }
     }
 
