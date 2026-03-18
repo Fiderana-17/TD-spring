@@ -1,47 +1,24 @@
 package com.example.tdspring.Controller;
 
-import com.example.tdspring.Entity.Student;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
     @RestController
     public class StudentController {
 
-        private List<Student> students = new ArrayList<>();
-
         @GetMapping("/welcome")
-        public String welcome(@RequestParam String name) {
-            return "Welcome " + name;
-        }
+        public ResponseEntity<String> welcome(@RequestParam(required = false) String name) {
 
-        @PostMapping("/students")
-        public String addStudents(@RequestBody List<Student> newStudents) {
-
-            students.addAll(newStudents);
-
-            String result = "";
-            for (Student s : students) {
-                result += s.getFirstName() + " " + s.getLastName() + "\n";
+            if (name == null || name.isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body("Name is required");
             }
 
-            return result;
-        }
-
-        @GetMapping("/students")
-        public String getStudents(@RequestHeader(value = "Accept", defaultValue = "text/plain") String accept) {
-
-            if (!accept.equals("text/plain")) {
-                return "Format non supporté";
-            }
-
-            String result = "";
-            for (Student s : students) {
-                result += s.getFirstName() + " " + s.getLastName() + "\n";
-            }
-
-            return result;
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("Welcome " + name);
         }
     }
 
