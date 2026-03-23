@@ -43,5 +43,34 @@ import java.util.List;
                     .body("Server error");
         }
         }
+
+    @GetMapping("/students")
+    public ResponseEntity<?> getStudents(@RequestHeader(value = "Accept", required = false) String accept) {
+
+        try {
+
+            if (accept == null) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body("Accept header is required");
+            }
+
+            if (!accept.equals("text/plain") && !accept.equals("application/json")) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_IMPLEMENTED)
+                        .body("Format not supported");
+            }
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(students);
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Server error");
+        }
+    }
 }
 
