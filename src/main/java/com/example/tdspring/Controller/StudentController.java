@@ -49,7 +49,7 @@ import java.util.List;
 
         try {
 
-            if (accept == null) {
+            if (accept == null || accept.equals("*/*")) {
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .body("Accept header is required");
