@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
     public class StudentController {
+
+    private List<Student> students = new ArrayList<>();
 
         @GetMapping("/welcome")
         public ResponseEntity<String> welcome(@RequestParam(required = false) String name) {
@@ -24,23 +27,21 @@ import java.util.List;
                     .body("Welcome " + name);
         }
 
-        // B) POST /students
-        @PostMapping("/students")
-        public ResponseEntity<?> addStudents(@RequestBody List<Student> newStudents) {
+        @PostMapping(value = "/students", produces = "application/json")
+    public ResponseEntity<?> addStudents(@RequestBody List<Student> newStudents) {
 
-            try {
-                students.addAll(newStudents);
+        try {
+            students.addAll(newStudents);
 
-                return ResponseEntity
-                        .status(HttpStatus.CREATED)
-                        .body(students);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(students);
 
-            } catch (Exception e) {
-
-                return ResponseEntity
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Server error");
-            }
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Server error");
         }
-    }
+        }
+}
 
