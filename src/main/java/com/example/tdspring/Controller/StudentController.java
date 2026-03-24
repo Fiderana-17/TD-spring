@@ -28,7 +28,7 @@ import java.util.List;
         }
 
         @PostMapping(value = "/students", produces = "application/json")
-    public ResponseEntity<?> addStudents(@RequestBody List<Student> newStudents) {
+    public ResponseEntity<Object> addStudents(@RequestBody List<Student> newStudents) {
 
         try {
             students.addAll(newStudents);
