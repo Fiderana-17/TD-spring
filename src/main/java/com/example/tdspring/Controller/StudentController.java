@@ -6,71 +6,38 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+
+
 import java.util.List;
-
 @RestController
-    public class StudentController {
+public class StudentController {
 
-    private List<Student> students = new ArrayList<>();
+    private final StudentService service;
 
-        @GetMapping("/welcome")
-        public ResponseEntity<String> welcome(@RequestParam(required = false) String name) {
+    public StudentController(StudentService service) {
+        this.service = service;
+    }
 
-            if (name == null || name.isEmpty()) {
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body("Name is required");
-            }
+    @PostMapping("/students")
+    public ResponseEntity<?> createStudents(@RequestBody List<Student> newStudents) {
+
+        try {
+            List<Student> result = service.addStudents(newStudents);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body("Welcome " + name);
-        }
+                    .body(result);
 
-        @PostMapping(value = "/students", produces = "application/json")
-    public ResponseEntity<Object> addStudents(@RequestBody List<Student> newStudents) {
-
-        try {
-            students.addAll(newStudents);
+        } catch (BadRequestException e) {
 
             return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(students);
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Server error");
-        }
-        }
-
-    @GetMapping("/students")
-    public ResponseEntity<?> getStudents(@RequestHeader(value = "Accept", required = false) String accept) {
-
-        try {
-
-            if (accept == null || accept.equals("*/*")) {
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body("Accept header is required");
-            }
-
-            if (!accept.equals("text/plain") && !accept.equals("application/json")) {
-                return ResponseEntity
-                        .status(HttpStatus.NOT_IMPLEMENTED)
-                        .body("Format not supported");
-            }
-
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(students);
-
-        } catch (Exception e) {
-
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Server error");
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
     }
-}
 
+    @GetMapping("/students")
+    public List<Student> getStudents() {
+        return service.getStudents();
+    }
+}
